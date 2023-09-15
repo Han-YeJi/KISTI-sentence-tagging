@@ -1,16 +1,19 @@
-# 국내 논문 문장 의미 태깅 모델 개발
+# Development of domestic thesis sentence semantic tagging model
+## Introduction
+- To automate the meaning tagging of the domestic thesis sentence by predicting the rhetorical category of a thesis sentence.
+- Hierarchical embedding structure and multiple loss functions are used to represent the meaning of rhetorical categories.
+  
+## Dataset description
+There are a total of 155,740 thesis sentences and tag pairs, and the semantic tags form a hierarchical structure with semantic structure classification/detailed semantic classification.
 
-### 개요
-- 주어진 논문 문장의 수사학적 카테고리를 예측하여 국내 논문 문장 의미 태깅 자동화를 하고자 함. 
-- 수사학적 카테고리를 위해 계층적 임베딩 구조, 다중 손실 함수를 사용함.
-
-### Training Environment
-- python 3.7
-- pytorch 1.8.0
-- Ubuntu 18.04
-- CUDA 11.1
-- GeForce RTX 3090
-
+## Main strategy
+1. Constructed text representation for thesis sentences using KorSciBert and GCN.
+2. Label embedding is constructed to extract the label semantic representation.
+3. Multiple loss function was constructed to reflect hierarchical properties through label semantic distance.
+   - Classification loss : We predicted labels using only text representation.
+   - Join embedding loss : We minimized the distance between text semantics and target label semantics within the same embedding space.
+   - Matching loss : We put distance between text semantics and incorrect label semantics.
+   
 ### Directory Structure
 ```
 /root/workspace
@@ -61,11 +64,6 @@
 └── sen_cls.yaml
 ```
 
-### Model
-- CrossValidation을 진행했으므로 총 5개의 checkpoint가 results 디렉토리에 존재
-- model_0fold 의 경우, 0fold를 validation dataset으로 사용한 것임. 
-- 사용코드는 src 디렉토리에 저장
-
 ### How to Use
 
 1. Create Environment & Import Library
@@ -87,9 +85,3 @@
    python main.py --do_predict=True --exp_num='0'  
    ```
 
-### Arguments
-- `--config_path` : 사용할 모델 parameter config
-- `--exp_num` : 학습된 모델 저장 위치
-- `--do_train` : 모델 학습
-- `--do_test` : 모델 평가
-- `--do_predict` : 데모 실행
